@@ -1,0 +1,26 @@
+import express from "express"
+import { env, sequelize } from "./app/config/config.js"
+import cookieParser from "cookie-parser"
+import userRouter from "./app/modules/user/user.routes.js"
+import authRouter from "./app/modules/auth/auth.routes.js"
+
+const app = express()
+const PORT = env("PORT")
+
+app.use(cookieParser())
+app.use(express.json())
+
+app.use(env("APP_PATH"), userRouter)
+app.use(env("APP_PATH"), authRouter)
+
+app.use((req, res) => {
+    return res.status(404).json({ status: false, message: `Endpoint not found: ${req.originalUrl}` })
+})
+
+sequelize.sync()
+    .then(() => console.log(`Connect to PostgreSQL on host ${env("DB_HOST")}`))
+    .catch((err) => console.log("Failed connect to PostgreSQL: ", err))
+
+app.listen(PORT, (
+    console.log(`App running on port ${PORT}`)
+))
