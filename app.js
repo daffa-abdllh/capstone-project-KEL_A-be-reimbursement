@@ -1,4 +1,5 @@
 import express from "express"
+import cors from "cors"
 import { env, sequelize } from "./app/config/config.js"
 import cookieParser from "cookie-parser"
 import userRouter from "./app/modules/user/user.routes.js"
@@ -7,6 +8,11 @@ import authRouter from "./app/modules/auth/auth.routes.js"
 const app = express()
 const PORT = env("PORT")
 
+app.use(cors({
+    origin: JSON.parse(env("CLIENT_URL") || "[]"),
+    credentials: true,
+    exposedHeaders: ["set-cookie"]
+}))
 app.use(cookieParser())
 app.use(express.json())
 

@@ -8,7 +8,7 @@ class userController {
         const { username } = req.auth
         try {
             const users = await User.findAll({
-                attributes: ["id", "username", "email", "phone_number", "role"]
+                attributes: ["id", "username", "first_name", "last_name", "email", "phone_number", "role"]
             })
 
             const message = "Success get users"

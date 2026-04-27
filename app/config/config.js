@@ -14,34 +14,27 @@ export const sequelize = new Sequelize(env("DB_NAME"), env("DB_USERNAME"), env("
     logging: false
 })
 
+// Di dalam config.js
+// config.js
 export const getCookieOptions = ({ req, maxAgeMs } = {}) => {
-    const cookieSecureEnv = env("COOKIE_SECURE"); // "true" | "false" | undefined
-    const sameSiteEnv = (env("COOKIE_SAMESITE") || "").toLowerCase();
-    const cookieDomainEnv = env("COOKIE_DOMAIN"); // boleh kosong
-
-    // deteksi host: IP/localhost -> domain harus undefined
+    // 1. Ambil host dari request
     const host = (req?.hostname || req?.headers?.host || "").split(":")[0];
-    const isIp = /^\d{1,3}(\.\d{1,3}){3}$/.test(host);
-    const isLocal = host === "localhost";
-    const domain = (isIp || isLocal) ? undefined : (cookieDomainEnv || undefined);
+    
+    // 2. Cek apakah ini lokal (localhost atau 127.0.0.1)
+    const isLocal = host === "localhost" || host === "127.0.0.1";
 
-    // secure: default FALSE untuk local/ip (karena biasanya HTTP)
-    const secure =
-        cookieSecureEnv != null
-        ? cookieSecureEnv === "true"
-        : false;
+    // 3. ATURAN KRUSIAL: Jika lokal, domain WAJIB undefined
+    // Jangan berikan string "localhost" ke property domain
+    const domain = isLocal ? undefined : (env("COOKIE_DOMAIN") || undefined);
 
-    // sameSite: kalau secure false, jangan pernah "none" (browser reject)
-    const sameSite =
-        sameSiteEnv
-        ? (sameSiteEnv === "none" && !secure ? "lax" : sameSiteEnv)
-        : (secure ? "none" : "lax");
+    const secure = env("COOKIE_SECURE") === "true";
+    const sameSite = (env("COOKIE_SAMESITE") || (secure ? "none" : "lax")).toLowerCase();
 
     return {
         httpOnly: true,
         secure,
         sameSite,
-        domain,
+        domain, // Ini akan bernilai undefined saat kamu buka di localhost
         path: "/",
         maxAge: maxAgeMs,
     };
