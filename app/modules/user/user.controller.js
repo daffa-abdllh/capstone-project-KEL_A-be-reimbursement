@@ -67,6 +67,7 @@ class userController {
                 first_name: validate.first_name,
                 last_name: validate.last_name,
                 phone_number: validate.phone_number,
+                bank_account: validate.bank_account,
                 email: validate.email,
                 role: validate.role,
                 ...validate.password && { password: bcrypt.hashSync(validate.password) }

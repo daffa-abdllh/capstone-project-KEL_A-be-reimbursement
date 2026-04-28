@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser"
 import userRouter from "./app/modules/user/user.routes.js"
 import authRouter from "./app/modules/auth/auth.routes.js"
 import categoryRouter from "./app/modules/category/category.routes.js"
+import reimbursementRouter from "./app/modules/reimbursement/reimbursement.routes.js"
 
 const app = express()
 const PORT = env("PORT")
@@ -20,6 +21,7 @@ app.use(express.json())
 app.use(env("APP_PATH"), userRouter)
 app.use(env("APP_PATH"), authRouter)
 app.use(env("APP_PATH"), categoryRouter)
+app.use(env("APP_PATH"), reimbursementRouter)
 
 app.use((req, res) => {
     return res.status(404).json({ status: false, message: `Endpoint not found: ${req.originalUrl}` })
