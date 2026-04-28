@@ -51,7 +51,7 @@ const Reimbursement = sequelize.define("reimburses", {
     indexes: [
         {
             name: "idx_reimbursement",
-            unique: true,
+            unique: false,
             fields: ["category_id", "user_id"]
         }
     ]

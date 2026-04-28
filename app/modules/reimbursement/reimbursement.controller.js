@@ -6,12 +6,15 @@ import { decodeDataUriToBuffer, extFromMime, replaceExt } from "../../utils/help
 import Reimbursement from "./reimbursement.domain.js"
 import { deleteData, postData } from "../../utils/service.js"
 import User from "../user/user.domain.js"
+import { literal } from "sequelize"
 
 class reimburseController {
     async index (req, res) {
-        const { id, username } = req.auth
+        const { id, username, role } = req.auth
+        const { order } = req.query
         try {
             const reimburse = await Reimbursement.findAll({
+                ...role === 3 && { where: { user_id: id } },
                 include: [
                     {
                         model: User,
@@ -22,8 +25,16 @@ class reimburseController {
                         attributes: ["id", "name"]
                     }
                 ],
+                order: order === "date" ? [["date", "ASC"]] : [[
+                        literal(`CASE 
+                            WHEN "reimburses"."status" = 1 THEN 1 
+                            WHEN "reimburses"."status" = 2 THEN 2 
+                            WHEN "reimburses"."status" = 0 THEN 3 
+                            ELSE 4 END`), 
+                        "ASC"
+                    ]],
                 attributes: { exclude: ["createdAt", "updatedAt", "user_id", "category_id"] }
-            })
+            });
 
             const message = "Success get reimbursement."
             debug(username, true, 200, message, req)
@@ -34,8 +45,6 @@ class reimburseController {
             })
         } catch (err) {
             const { username, code, message, body } = errorHelper(err)
-
-            await transaction.rollback()
 
             debug(username, false, code, message, req)
             return res.status(code).json(body)        

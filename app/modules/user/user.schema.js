@@ -83,7 +83,7 @@ export const updateUserSchema = z.object({
         }),
 
     bank_account: z
-        .string()
+        .number()
         .min(1, "Bank account is required"),
 
     email: z

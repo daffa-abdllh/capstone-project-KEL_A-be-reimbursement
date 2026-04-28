@@ -15,7 +15,8 @@ class categoryController {
             }
 
             const categories = await Model.findAll({
-                attributes: { exclude: ["createdAt", "updatedAt"] }
+                attributes: { exclude: ["createdAt", "updatedAt"] },
+                order: [["status", "DESC"]]
             })
 
             const message = "Categories retrieved successfully."
