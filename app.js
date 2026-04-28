@@ -16,7 +16,7 @@ app.use(cors({
     exposedHeaders: ["set-cookie"]
 }))
 app.use(cookieParser())
-app.use(express.json())
+app.use(express.json({ limit: "20mb" }))
 
 app.use(env("APP_PATH"), userRouter)
 app.use(env("APP_PATH"), authRouter)

@@ -38,13 +38,13 @@ const Reimbursement = sequelize.define("reimburses", {
     },
     notas: {
         type: DataTypes.JSONB,
-        allowNull: false,
-        defaultValue: []
+        allowNull: true,
+        defaultValue: {}
     },
     proof_of_payments: {
         type: DataTypes.JSONB,
-        allowNull: false,
-        defaultValue: []
+        allowNull: true,
+        defaultValue: {}
     }
 }, {
     timestamps: true,

@@ -62,3 +62,7 @@ export const issueToken = (payload, secret_key, duration) => {
     const token = jwt.sign(payload, secret_key, { expiresIn: duration })
     return token
 }
+
+export const toPlain = (instance) => {
+    return instance.get({ plain: true })
+}
