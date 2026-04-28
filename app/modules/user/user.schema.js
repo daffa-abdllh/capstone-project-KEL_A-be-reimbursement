@@ -28,6 +28,10 @@ export const storeUserSchema = z.object({
             message: "Phone number must be numeric and have a valid length",
         }),
 
+    bank_account: z
+        .number()
+        .min(1, "Bank account is required"),
+
     email: z
         .string()
         .nonempty("Email is required")
@@ -77,6 +81,10 @@ export const updateUserSchema = z.object({
         }, {
             message: "Phone number must be numeric and have a valid length",
         }),
+
+    bank_account: z
+        .number()
+        .min(1, "Bank account is required"),
 
     email: z
         .string()

@@ -25,6 +25,11 @@ const User = sequelize.define("users", {
         allowNull: true,
         defaultValue: null
     },
+    bank_account: {
+        type: DataTypes.BIGINT,
+        allowNull: false,
+        defaultValue: 0
+    },
     phone_number: {
         type: DataTypes.STRING,
         allowNull: true,
