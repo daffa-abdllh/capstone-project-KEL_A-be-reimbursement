@@ -2,6 +2,7 @@ import bcrypt from "bcryptjs"
 import { debug, errorHelper } from "../../utils/helper/helper.js"
 import { storeUserSchema, updateUserSchema } from "./user.schema.js"
 import User from "./user.domain.js"
+import Reimbursement from "../reimbursement/reimbursement.domain.js"
 
 class userController {
     async index (req, res) {
@@ -99,13 +100,21 @@ class userController {
     }
 
     async delete (req, res) {
+
         const { username } = req.auth
         const { id } = req.params
         try {
-            const deleteUser = await User.destroy({
-                where: { id }
+            const findUser = await User.findOne({
+                where: { id },
+                include: {
+                    model: Reimbursement,
+                    attributes: ["id"]
+                }
             })
-            if (!deleteUser) throw { username, code: 400, message: "Failed delete user" }
+            if (!findUser) throw { username, code: 404, message: "User not found" }
+            if (findUser.reimburses.length > 0) throw { username, code: 400, message: "This data cannot be deleted because it has a relationship with other data." }
+        
+            await findUser.destroy()
 
             debug(username, true, 204, "Success delete user", req)
             return res.sendStatus(204)
