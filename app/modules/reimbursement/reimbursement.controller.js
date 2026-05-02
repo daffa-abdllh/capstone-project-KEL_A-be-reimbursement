@@ -18,7 +18,7 @@ class reimburseController {
                 include: [
                     {
                         model: User,
-                        attributes: ["id", "username", "first_name", "last_name"]
+                        attributes: ["id", "username", "first_name", "last_name", "bank_account"]
                     },
                     {
                         model: Category,
