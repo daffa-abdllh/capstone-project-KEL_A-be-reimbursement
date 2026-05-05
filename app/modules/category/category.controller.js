@@ -1,4 +1,5 @@
 import { debug, errorHelper } from "../../utils/helper/helper.js"
+import Reimbursement from "../reimbursement/reimbursement.domain.js"
 import Category from "./category.domain.js"
 import { createCategorySchema } from "./category.schema.js"
 
@@ -88,8 +89,14 @@ class categoryController {
         const { username } = req.auth
         const { id } = req.params
         try {
-            const category = await Category.findByPk(id)
+            const category = await Category.findByPk(id,{
+                include: {
+                    model: Reimbursement,
+                    attributes: ["id"]
+                }
+            })
             if (!category) throw { username, code: 404, message: "Category not found." }
+            if (category.reimburses.length > 0) throw { username, code: 400, message: "This data cannot be deleted because it has a relationship with other data." }
 
             await category.destroy()
 

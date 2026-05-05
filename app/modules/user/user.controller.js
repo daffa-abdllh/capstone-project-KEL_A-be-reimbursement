@@ -3,13 +3,21 @@ import { debug, errorHelper } from "../../utils/helper/helper.js"
 import { storeUserSchema, updateUserSchema } from "./user.schema.js"
 import User from "./user.domain.js"
 import Reimbursement from "../reimbursement/reimbursement.domain.js"
+import { literal } from "sequelize"
 
 class userController {
     async index (req, res) {
         const { username } = req.auth
         try {
             const users = await User.findAll({
-                attributes: { exclude: ["createdAt", "updatedAt", "password"] }
+                attributes: { exclude: ["createdAt", "updatedAt", "password"] },
+                order: [[literal(`CASE 
+                    WHEN "users"."role" = 1 THEN 1 
+                    WHEN "users"."role" = 2 THEN 2 
+                    WHEN "users"."role" = 3 THEN 3 
+                    ELSE 4 END`), 
+                    "ASC"
+                ]]
             })
 
             const message = "Success get users"
