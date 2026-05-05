@@ -33,6 +33,7 @@ class reimburseController {
                             ELSE 4 END`), 
                         "DESC"
                     ]],
+                ...order && { limit: 5 },
                 attributes: { exclude: ["createdAt", "updatedAt", "user_id", "category_id"] }
             });
 
