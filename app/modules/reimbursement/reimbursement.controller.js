@@ -25,13 +25,13 @@ class reimburseController {
                         attributes: ["id", "name"]
                     }
                 ],
-                order: order === "date" ? [["date", "ASC"]] : [[
+                order: order === "date" ? [["date", "DESC"]] : [[
                         literal(`CASE 
                             WHEN "reimburses"."status" = 1 THEN 1 
                             WHEN "reimburses"."status" = 2 THEN 2 
                             WHEN "reimburses"."status" = 0 THEN 3 
                             ELSE 4 END`), 
-                        "ASC"
+                        "DESC"
                     ]],
                 attributes: { exclude: ["createdAt", "updatedAt", "user_id", "category_id"] }
             });
